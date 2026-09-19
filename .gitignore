@@ -1,0 +1,44 @@
+node_modules/
+dist/
+.test-dist/
+*.tsbuildinfo
+.agents/outputs/
+.replit.merged
+attached_assets/shared-task-retained_1789281096648.zip
+
+# Patient/segmentation assets stay local and are never committed.
+attached_assets/
+attached_assets/**/*.[nN][rR][rR][dD]
+attached_assets/**/*.[sS][tT][lL]
+
+# Locally extracted medical discussion/measurement contents and Python caches.
+.agents/outputs/
+__pycache__/
+.pythonlibs/
+
+# Authorized local cohort archives and derived inventory never enter git.
+.local/patient-output/cohort/
+.local/patient-output/cohort-analysis/
+.local/patient-output/additional-drive-sources/
+.local/patient-output/pretrained-orbita-pilot/
+.local/patient-output/manual-slicer-review/
+.local/patient-output/source-recovery/
+.local/model-jobs/
+.local/totalseg-home/
+.local/totalseg-weights/
+
+# User-provided reference books are local research material, not app assets.
+attached_assets/_OceanofPDF.com_Forensic_Anthropology_2nd_ed_-_Natalie_R_Langl_1789581126683.pdf
+attached_assets/_OceanofPDF.com_FORENSIC_ANTHROPOLOGY_CONTEMPORARY_THEORY_AND__1789581126684.pdf
+attached_assets/ilide.info-anthropometry-of-the-head-and-face-pr_e2b88733bf248_1789581530105.pdf
+attached_assets/_OceanofPDF.com_The_Bone_Book_-_Robert_W_Mann_1789581659718.pdf
+.local/reference-books/
+.local/reference-data/
+.local/orbit-localizer-runs/
+.local/anatomical-evaluation/
+
+# Downloaded papers and figure excerpts remain local, not app/repository assets.
+.local/reference-audit/
+
+# All locally derived medical images/evidence remain outside version control.
+.local/patient-output/

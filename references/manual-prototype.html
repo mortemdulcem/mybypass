@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbita Ölçüm Aracı</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#0d1117; --panel:#151b23; --panel2:#1c232e; --border:#2a323e;
+    --text:#e8edf2; --muted:#8b98a8; --accent:#4fc3d9; --accent2:#8fe0ee;
+    --warn:#f0895b; --good:#57d99d; --danger:#e2586b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:"IBM Plex Sans",system-ui,sans-serif;height:100%;}
+  .mono{font-family:"IBM Plex Mono",monospace;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select{font-family:inherit;}
+
+  header{
+    display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;
+    padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--border);
+  }
+  header h1{font-size:15px;margin:0;color:var(--accent2);letter-spacing:.02em;white-space:nowrap;}
+  .field{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+  .field input{width:70px;background:var(--panel2);border:1px solid var(--border);color:var(--text);
+    border-radius:5px;padding:4px 7px;font-size:12.5px;}
+  .field input[type=text]{width:110px;}
+  .btn{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;
+    padding:6px 12px;font-size:12.5px;font-weight:500;}
+  .btn:hover{border-color:var(--accent);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#052226;font-weight:600;}
+  .btn.primary:hover{background:var(--accent2);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  #fileInput{display:none;}
+  #loadStatus{font-size:12px;color:var(--muted);}
+
+  .layout{display:flex;gap:14px;padding:14px;height:calc(100vh - 58px);min-height:600px;}
+  .views{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:12px;min-width:0;}
+  .view-axial{grid-column:1/2;grid-row:1/3;}
+  .view-cor{grid-column:2/3;grid-row:1/2;}
+  .view-sag{grid-column:2/3;grid-row:2/3;}
+  .view-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px;
+    display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .view-box .vh{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);
+    font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em;}
+  .canvas-wrap{display:flex;align-items:center;justify-content:center;background:#000;border-radius:6px;
+    overflow:hidden;flex:1;min-height:0;}
+  canvas{display:block;image-rendering:pixelated;cursor:crosshair;max-width:100%;max-height:100%;}
+  .sliceRow{display:flex;align-items:center;gap:8px;}
+  .sliceRow input[type=range]{flex:1;}
+  .sliceRow span{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);min-width:64px;text-align:right;}
+
+  .sidebar{width:300px;flex:none;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;}
+  .card h2{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 10px;
+    font-family:"IBM Plex Mono",monospace;font-weight:600;}
+  .tools{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .tools button.active{background:var(--accent);border-color:var(--accent);color:#052226;}
+  .brushRow{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--muted);}
+  .brushRow input{flex:1;}
+
+  .seg-row{display:flex;align-items:center;gap:6px;padding:6px 4px;border-radius:6px;font-size:12.5px;}
+  .seg-row.active{background:var(--panel2);}
+  .seg-row .swatch{width:13px;height:13px;border-radius:3px;flex:none;border:1px solid rgba(255,255,255,.25);}
+  .seg-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+  .seg-row .vol{font-family:"IBM Plex Mono",monospace;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums;}
+  .seg-row button{background:none;border:none;color:var(--muted);font-size:13px;padding:2px 4px;}
+  .seg-row button:hover{color:var(--danger);}
+  .addSegRow{display:flex;gap:6px;margin-top:8px;}
+  .addSegRow input{flex:1;background:var(--panel2);border:1px solid var(--border);color:var(--text);
+    border-radius:5px;padding:5px 8px;font-size:12.5px;}
+
+  table.meas{width:100%;border-collapse:collapse;font-size:12px;}
+  table.meas th{text-align:left;color:var(--muted);font-weight:500;font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.04em;padding:4px 4px;border-bottom:1px solid var(--border);}
+  table.meas td{padding:4px 4px;border-bottom:1px solid var(--border);}
+  table.meas input{width:100%;background:transparent;border:none;color:var(--text);font-size:12px;font-family:inherit;}
+  table.meas input:focus{outline:1px solid var(--accent);border-radius:3px;}
+  table.meas td.mm{font-family:"IBM Plex Mono",monospace;color:var(--accent2);white-space:nowrap;}
+  table.meas button{background:none;border:none;color:var(--muted);font-size:13px;}
+  table.meas button:hover{color:var(--danger);}
+
+  .hint{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:6px;}
+  .emptyState{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
+    color:var(--muted);font-size:13px;text-align:center;gap:10px;padding:20px;}
+  .emptyState b{color:var(--text);}
+  .footBtns{display:flex;gap:8px;flex-wrap:wrap;}
+  .footBtns button{flex:1;}
+  #importProject{display:none;}
+  .badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;padding:1px 6px;border-radius:999px;
+    background:var(--panel2);color:var(--muted);border:1px solid var(--border);}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ORBITA ÖLÇÜM ARACI</h1>
+  <button class="btn primary" id="btnLoad">PNG Klasörü Yükle</button>
+  <input type="file" id="fileInput" webkitdirectory directory multiple accept="image/png">
+  <span id="loadStatus">Henüz veri yüklenmedi.</span>
+  <span style="flex:1"></span>
+  <div class="field">Sıra No <input type="text" id="patientId" placeholder="örn. 175"></div>
+  <div class="field">Pixel Spacing (mm) <input type="number" id="pxSpacing" value="0.488281" step="0.000001"></div>
+  <div class="field">Slice Thickness (mm) <input type="number" id="sliceThk" value="1.25" step="0.01"></div>
+  <button class="btn" id="btnSaveProject">Projeyi Kaydet</button>
+  <button class="btn" id="btnLoadProject">Projeyi Aç</button>
+  <input type="file" id="importProject" accept=".json">
+</header>
+
+<div class="layout">
+  <div class="views">
+    <div class="view-box view-axial">
+      <div class="vh"><span>AXIAL</span><span id="axialInfo">-</span></div>
+      <div class="canvas-wrap"><canvas id="cAxial" width="560" height="560"></canvas></div>
+      <div class="sliceRow">
+        <button class="btn" id="btnPrevSlice">◀</button>
+        <input type="range" id="sliceSlider" min="0" max="0" value="0">
+        <button class="btn" id="btnNextSlice">▶</button>
+        <span id="sliceLabel">kesit -/-</span>
+      </div>
+    </div>
+    <div class="view-box view-cor">
+      <div class="vh"><span>CORONAL</span><span id="corInfo">-</span></div>
+      <div class="canvas-wrap"><canvas id="cCor" width="420" height="260"></canvas></div>
+    </div>
+    <div class="view-box view-sag">
+      <div class="vh"><span>SAGITTAL</span><span id="sagInfo">-</span></div>
+      <div class="canvas-wrap"><canvas id="cSag" width="420" height="260"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="card">
+      <h2>Araç</h2>
+      <div class="tools">
+        <button class="btn active" data-tool="paint">🖌 Boya</button>
+        <button class="btn" data-tool="erase">⌫ Sil</button>
+        <button class="btn" data-tool="ruler">📏 Cetvel</button>
+        <button class="btn" data-tool="nav">✛ Gezinti</button>
+        <button class="btn" data-tool="curve" style="grid-column:1/3;">✏ Eğri (Alan/Çevre)</button>
+      </div>
+      <div class="brushRow"><span>Fırça</span><input type="range" id="brushSize" min="2" max="60" value="14"><span id="brushVal" class="mono">14px</span></div>
+      <div class="brushRow"><span>Cetvel etiketi</span>
+        <select id="rulerPreset" style="flex:1;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:4px 6px;font-size:12px;">
+          <option value="">— serbest (elle yaz) —</option>
+          <optgroup label="Genişlik / Yükseklik / Derinlik">
+            <option>Sağ Orbital Genişlik</option>
+            <option>Sol Orbital Genişlik</option>
+            <option>Sağ Orbital Yükseklik</option>
+            <option>Sol Orbital Yükseklik</option>
+            <option>Sağ Orbital Derinlik</option>
+            <option>Sol Orbital Derinlik</option>
+          </optgroup>
+          <optgroup label="Kenar Kalınlığı">
+            <option>Superior Kenar Kalınlığı</option>
+            <option>İnferior Kenar Kalınlığı</option>
+            <option>Medial Kenar Kalınlığı</option>
+            <option>Lateral Kenar Kalınlığı</option>
+          </optgroup>
+          <optgroup label="Diğer">
+            <option>İnterorbital Mesafe</option>
+            <option>Biorbital Genişlik</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="hint">Boya/Sil: Axial görünümde sürükleyin. Gezinti: herhangi bir görünüme tıklayıp diğer iki düzlemi o noktaya kaydırın. Cetvel: bir etiket seçin, iki nokta tıklayın — ölçüm otomatik o adla eklenir (sonra da değiştirebilirsiniz). Eğri: aşağıdaki "Aperture Alan/Çevre" kartından açılıp kapanır. 18 lineer parametrenin 12 tanesi (1-6, 11-16) cetvelle, alan/çevre (17-18) eğri aracıyla, 12 landmark (26-37) ve Centroid Size (38) aşağıdaki kartla, Orbital İndeks (9-10) ve Asimetri İndeksleri (19-25) ise otomatik türetilir.</div>
+    </div>
+
+    <div class="card">
+      <h2>Frankfort Düzlemi Hizalama</h2>
+      <div id="lmRows"></div>
+      <div class="footBtns" style="margin-top:8px;">
+        <button class="btn primary" id="btnAlign">Hizala (Rotasyon Uygula)</button>
+      </div>
+      <div class="hint">Herhangi bir görünüşte (axial/coronal/sagittal) "Gezinti" aracıyla noktaya gidip aşağıda ilgili "İşaretle" butonuna basın: <b>Sağ Porion</b> (sağ dış kulak yolu üst kenarı), <b>Sol Porion</b> (sol dış kulak yolu üst kenarı), <b>Sol Orbitale</b> (sol göz çukuru alt kenarının en alt noktası). Üçü de işaretlenince "Hizala" tüm hacmi bu düzlem yatay olacak şekilde döndürür — segmentasyona ve ölçümlere BUNDAN SONRA başlayın.</div>
+    </div>
+
+    <div class="card">
+      <h2>Segmentler</h2>
+      <div id="segList"></div>
+      <div class="addSegRow">
+        <input type="text" id="newSegName" placeholder="yeni segment adı">
+        <button class="btn" id="btnAddSeg">+ Ekle</button>
+      </div>
+      <div class="footBtns" style="margin-top:10px;">
+        <button class="btn primary" id="btnFill">Fill Between Slices</button>
+      </div>
+      <div class="hint">Bir segment için en az 2 kesitte sınır boyayın, sonra "Fill Between Slices" ile aradaki kesitleri doldurun. Hacim otomatik hesaplanır.</div>
+    </div>
+
+    <div class="card">
+      <h2>Lineer Ölçümler</h2>
+      <table class="meas" id="measTable">
+        <thead><tr><th>Etiket</th><th>mm</th><th></th></tr></thead>
+        <tbody id="measBody"></tbody>
+      </table>
+      <div class="hint" id="measHint">Cetvel aracını seçip iki nokta tıklayın.</div>
+    </div>
+
+    <div class="card">
+      <h2>12 Landmark (3B) &amp; Centroid Size</h2>
+      <div id="lm12Rows"></div>
+      <div class="hint">Gezinti aracıyla her landmarkın konumuna gidip 📍 ile işaretleyin. 12'si de işaretlenince Centroid Size otomatik hesaplanır (parametre 26-38).</div>
+      <div class="hint" style="margin-top:6px;"><b>Centroid Size:</b> <span id="centroidSizeVal" class="mono">—</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Aperture Alan / Çevre (Eğri)</h2>
+      <div class="brushRow"><span>Eğri etiketi</span>
+        <select id="curvePreset" style="flex:1;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:4px 6px;font-size:12px;">
+          <option value="">— serbest (elle yaz) —</option>
+          <option>Sağ Aperture</option>
+          <option>Sol Aperture</option>
+        </select>
+      </div>
+      <div class="footBtns" style="margin-top:8px;">
+        <button class="btn" id="btnCurveStart">Eğri Başlat</button>
+        <button class="btn primary" id="btnCurveFinish">Eğriyi Kapat &amp; Bitir</button>
+        <button class="btn" id="btnCurveCancel">İptal</button>
+      </div>
+      <div id="curveList" style="margin-top:8px;"></div>
+      <div class="hint">"Eğri Başlat"a basıp axial görünümde orbital aperture kenarı boyunca sırayla noktalar tıklayın (mümkünse Frankfort hizalaması sonrası, aperture'ın en düz göründüğü kesitte), sonra "Eğriyi Kapat &amp; Bitir". Alan (mm²) shoelace formülüyle, çevre (mm) kapalı çokgen kenarları toplanarak hesaplanır (parametre 17-18).</div>
+    </div>
+
+    <div class="card">
+      <h2>Türetilmiş Parametreler</h2>
+      <div id="derivedList" class="hint" style="margin:0;"></div>
+      <div class="hint" style="margin-top:8px;">Orbital İndeks = (Yükseklik/Genişlik)×100 — eşleşen "Sağ/Sol Orbital Genişlik" ve "Yükseklik" ölçümlerinden otomatik (9-10). Asimetri İndeksi = |Sağ−Sol|/((Sağ+Sol)/2)×100 — Genişlik/Yükseklik/Derinlik/Hacim/Aperture Alan için otomatik (19-25).</div>
+    </div>
+
+    <div class="card">
+      <h2>Dışa Aktar</h2>
+      <div class="footBtns">
+        <button class="btn" id="btnExportCsv">CSV indir</button>
+      </div>
+      <div class="hint">Segment hacimlerini (cm³), lineer ölçümleri (mm), 12 landmarkı + Centroid Size'ı, eğrileri (alan/çevre) ve türetilmiş indeksleri tek CSV'de indirir. Parametre 39-43 (GPA/PCA/TPS) kohort-seviyeli toplu analiz gerektirir, bu araçla değil.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------------- State ----------------
+  const state = {
+    vol: null,           // {z,h,w,data:Uint8Array}
+    px: 0.488281,
+    sl: 1.25,
+    curZ: 0,
+    crosshair: {x:0, y:0},
+    tool: 'paint',
+    brush: 14,
+    segments: [],        // {id,name,color,key:Map(z->Uint8Array(h*w) 0/1), filled:Map(z->Uint8Array)}
+    curSeg: null,
+    measurements: [],     // {id,label,p1:{z,x,y},p2:{z,x,y} or null (pending)}
+    landmarks: {PoR:null, PoL:null, OrL:null}, // each {x,y,z} in voxel index space
+    lm12: {},             // 12 named landmarks: key -> {x,y,z} or absent
+    curves: [],           // {id,label,z,points:[{x,y},...]} closed polygons
+    nextId: 1,
+    view: {axial:{scale:1,ox:0,oy:0}, cor:{scale:1,ox:0,oy:0}, sag:{scale:1,ox:0,oy:0}}
+  };
+
+  const PALETTE = ['#4fc3d9','#f0895b','#c792ea','#57d99d','#e2c95b','#e2586b','#7aa2f7','#f6a0c3'];
+
+  const $ = s => document.querySelector(s);
+  const cAxial = $('#cAxial'), cCor = $('#cCor'), cSag = $('#cSag');
+  const xAxial = cAxial.getContext('2d'), xCor = cCor.getContext('2d'), xSag = cSag.getContext('2d');
+
+  // ---------------- File loading ----------------
+  $('#btnLoad').addEventListener('click', ()=> $('#fileInput').click());
+  $('#fileInput').addEventListener('change', async (e)=>{
+    const files = Array.from(e.target.files).filter(f=>/\.png$/i.test(f.name));
+    if(!files.length){ alert('PNG dosyası bulunamadı.'); return; }
+    files.sort((a,b)=>{
+      const na = parseInt((a.name.match(/(\d+)/)||[0,0])[1],10);
+      const nb = parseInt((b.name.match(/(\d+)/)||[0,0])[1],10);
+      return na-nb;
+    });
+    $('#loadStatus').textContent = `Yükleniyor 0/${files.length}...`;
+    await loadVolume(files);
+  });
+
+  function loadImage(file){
+    return new Promise((resolve,reject)=>{
+      const img = new Image();
+      img.onload = ()=>resolve(img);
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  async function loadVolume(files){
+    const first = await loadImage(files[0]);
+    const w = first.width, h = first.height, z = files.length;
+    const off = document.createElement('canvas'); off.width=w; off.height=h;
+    const octx = off.getContext('2d');
+    const data = new Uint8Array(z*h*w);
+
+    octx.drawImage(first,0,0);
+    let d = octx.getImageData(0,0,w,h).data;
+    for(let i=0,p=0;i<w*h;i++,p+=4) data[i]=d[p];
+
+    for(let k=1;k<files.length;k++){
+      const img = await loadImage(files[k]);
+      octx.clearRect(0,0,w,h);
+      octx.drawImage(img,0,0,w,h);
+      d = octx.getImageData(0,0,w,h).data;
+      const base=k*h*w;
+      for(let i=0,p=0;i<w*h;i++,p+=4) data[base+i]=d[p];
+      if(k%10===0) $('#loadStatus').textContent = `Yükleniyor ${k+1}/${files.length}...`;
+      URL.revokeObjectURL(img.src);
+    }
+    URL.revokeObjectURL(first.src);
+
+    state.vol = {z,h,w,data};
+    state.curZ = Math.floor(z/2);
+    state.crosshair = {x:Math.floor(w/2), y:Math.floor(h/2)};
+    state.landmarks = {PoR:null, PoL:null, OrL:null};
+    state.lm12 = {};
+    state.curves = [];
+    $('#loadStatus').textContent = `Yüklendi: ${z} kesit, ${w}×${h}px`;
+    $('#sliceSlider').max = z-1;
+    $('#sliceSlider').value = state.curZ;
+
+    if(!state.segments.length){ addSegment('Sağ Orbita'); addSegment('Sol Orbita'); }
+    renderLandmarkRows();
+    renderLm12Rows();
+    renderCurveList();
+    renderAll();
+  }
+
+  $('#pxSpacing').addEventListener('input', e=>{ state.px = parseFloat(e.target.value)||0.001; refreshVolumes(); });
+  $('#sliceThk').addEventListener('input', e=>{ state.sl = parseFloat(e.target.value)||0.001; refreshVolumes(); });
+  state.px = parseFloat($('#pxSpacing').value);
+  state.sl = parseFloat($('#sliceThk').value);
+
+  // ---------------- Segments ----------------
+  function addSegment(name){
+    const color = PALETTE[state.segments.length % PALETTE.length];
+    const seg = {id:state.nextId++, name, color, key:new Map(), filled:new Map(), visible:true};
+    state.segments.push(seg);
+    state.curSeg = seg.id;
+    renderSegList();
+  }
+  $('#btnAddSeg').addEventListener('click', ()=>{
+    const name = $('#newSegName').value.trim();
+    if(!name) return;
+    addSegment(name);
+    $('#newSegName').value='';
+  });
+
+  function getSeg(id){ return state.segments.find(s=>s.id===id); }
+
+  function segVolumeCm3(seg){
+    const src = seg.filled.size ? seg.filled : seg.key;
+    let voxels=0;
+    for(const mask of src.values()){ for(let i=0;i<mask.length;i++) voxels+=mask[i]; }
+    const voxVolMm3 = state.px*state.px*state.sl;
+    return voxels*voxVolMm3/1000;
+  }
+
+  function renderSegList(){
+    const el = $('#segList'); el.innerHTML='';
+    state.segments.forEach(seg=>{
+      const row = document.createElement('div');
+      row.className = 'seg-row'+(seg.id===state.curSeg?' active':'');
+      const vol = segVolumeCm3(seg);
+      const filledNote = seg.filled.size ? '' : (seg.key.size>1 ? ' ⚠' : '');
+      row.innerHTML = `
+        <div class="swatch" style="background:${seg.color}"></div>
+        <div class="name" title="tıkla: aktif segment yap">${seg.name}</div>
+        <div class="vol">${seg.key.size}kesit · ${vol.toFixed(2)}cm³${filledNote}</div>
+        <button data-act="del" title="sil">✕</button>
+      `;
+      row.querySelector('.name').addEventListener('click', ()=>{ state.curSeg=seg.id; renderSegList(); });
+      row.querySelector('[data-act=del]').addEventListener('click', ()=>{
+        if(!confirm(`"${seg.name}" segmentini silmek istediğinize emin misiniz?`)) return;
+        state.segments = state.segments.filter(s=>s.id!==seg.id);
+        if(state.curSeg===seg.id) state.curSeg = state.segments[0]?.id ?? null;
+        renderSegList(); renderAll();
+      });
+      el.appendChild(row);
+    });
+  }
+
+  $('#btnFill').addEventListener('click', ()=>{
+    const seg = getSeg(state.curSeg);
+    if(!seg){ alert('Önce bir segment seçin.'); return; }
+    if(seg.key.size<1){ alert('Önce en az bir kesitte boyayın.'); return; }
+    fillBetweenSlices(seg);
+    renderSegList(); renderAll();
+  });
+
+  // ---- Shape-based interpolation (chamfer signed distance field) ----
+  function unsignedDT(zeroMask, w, h){
+    const INF=1e6;
+    const d = new Float32Array(w*h).fill(INF);
+    for(let i=0;i<w*h;i++) if(zeroMask[i]) d[i]=0;
+    const D1=1, D2=Math.SQRT2;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const idx=y*w+x; let best=d[idx];
+      if(x>0) best=Math.min(best,d[idx-1]+D1);
+      if(y>0) best=Math.min(best,d[idx-w]+D1);
+      if(x>0&&y>0) best=Math.min(best,d[idx-w-1]+D2);
+      if(x<w-1&&y>0) best=Math.min(best,d[idx-w+1]+D2);
+      d[idx]=best;
+    }
+    for(let y=h-1;y>=0;y--) for(let x=w-1;x>=0;x--){
+      const idx=y*w+x; let best=d[idx];
+      if(x<w-1) best=Math.min(best,d[idx+1]+D1);
+      if(y<h-1) best=Math.min(best,d[idx+w]+D1);
+      if(x<w-1&&y<h-1) best=Math.min(best,d[idx+w+1]+D2);
+      if(x>0&&y<h-1) best=Math.min(best,d[idx+w-1]+D2);
+      d[idx]=best;
+    }
+    return d;
+  }
+  function computeSDF(mask,w,h){
+    const inv = new Uint8Array(w*h); for(let i=0;i<mask.length;i++) inv[i]=mask[i]?0:1;
+    const dFg = unsignedDT(mask,w,h);
+    const dBg = unsignedDT(inv,w,h);
+    const sdf = new Float32Array(w*h);
+    for(let i=0;i<sdf.length;i++) sdf[i]=dBg[i]-dFg[i];
+    return sdf;
+  }
+  function fillBetweenSlices(seg){
+    const {w,h} = state.vol;
+    seg.filled = new Map();
+    const zs = Array.from(seg.key.keys()).sort((a,b)=>a-b);
+    if(zs.length===1){ seg.filled.set(zs[0], seg.key.get(zs[0])); return; }
+    for(let k=0;k<zs.length-1;k++){
+      const z1=zs[k], z2=zs[k+1];
+      const m1=seg.key.get(z1), m2=seg.key.get(z2);
+      seg.filled.set(z1,m1);
+      seg.filled.set(z2,m2);
+      if(z2-z1<2) continue;
+      const s1=computeSDF(m1,w,h), s2=computeSDF(m2,w,h);
+      for(let z=z1+1;z<z2;z++){
+        const t=(z-z1)/(z2-z1);
+        const mask = new Uint8Array(w*h);
+        for(let i=0;i<mask.length;i++) mask[i] = ((1-t)*s1[i]+t*s2[i])>0 ? 1:0;
+        seg.filled.set(z,mask);
+      }
+    }
+  }
+
+  function refreshVolumes(){ renderSegList(); }
+
+  // ---------------- Frankfort Horizontal Plane hizalama ----------------
+  const LM_DEFS = [
+    {key:'PoR', label:'Sağ Porion'},
+    {key:'PoL', label:'Sol Porion'},
+    {key:'OrL', label:'Sol Orbitale'}
+  ];
+
+  function renderLandmarkRows(){
+    const el = $('#lmRows'); el.innerHTML='';
+    LM_DEFS.forEach(def=>{
+      const p = state.landmarks[def.key];
+      const row = document.createElement('div');
+      row.className='seg-row';
+      row.innerHTML = `
+        <div class="name">${def.label}</div>
+        <div class="vol">${p? `kesit ${p.z+1}`:'—'}</div>
+        <button data-act="mark" title="mevcut konumu işaretle">📍</button>
+        <button data-act="clear" title="temizle">✕</button>
+      `;
+      row.querySelector('[data-act=mark]').addEventListener('click', ()=>{
+        if(!state.vol){ alert('Önce veri yükleyin.'); return; }
+        state.landmarks[def.key] = {x:state.crosshair.x, y:state.crosshair.y, z:state.curZ};
+        renderLandmarkRows();
+      });
+      row.querySelector('[data-act=clear]').addEventListener('click', ()=>{
+        state.landmarks[def.key]=null; renderLandmarkRows();
+      });
+      el.appendChild(row);
+    });
+  }
+
+  // ---------------- 12 named 3D landmarks + Centroid Size (param 26-38) ----------------
+  const LM12_DEFS = [
+    {key:'dR', label:'Dakryon Sağ'}, {key:'dL', label:'Dakryon Sol'},
+    {key:'fmoR', label:'Frontomalare Orbitale Sağ'}, {key:'fmoL', label:'Frontomalare Orbitale Sol'},
+    {key:'ekR', label:'Ektokonşiyon Sağ'}, {key:'ekL', label:'Ektokonşiyon Sol'},
+    {key:'mfR', label:'Maksillofrontale Sağ'}, {key:'mfL', label:'Maksillofrontale Sol'},
+    {key:'sciR', label:'Sup. Orbital Kenar Orta Nokta Sağ'}, {key:'sciL', label:'Sup. Orbital Kenar Orta Nokta Sol'},
+    {key:'iorR', label:'İnf. Orbital Kenar Orta Nokta Sağ'}, {key:'iorL', label:'İnf. Orbital Kenar Orta Nokta Sol'}
+  ];
+
+  function renderLm12Rows(){
+    const el = $('#lm12Rows'); el.innerHTML='';
+    LM12_DEFS.forEach(def=>{
+      const p = state.lm12[def.key];
+      const row = document.createElement('div');
+      row.className='seg-row';
+      row.innerHTML = `
+        <div class="name">${def.label}</div>
+        <div class="vol">${p? `kesit ${p.z+1}`:'—'}</div>
+        <button data-act="mark" title="mevcut konumu işaretle">📍</button>
+        <button data-act="clear" title="temizle">✕</button>
+      `;
+      row.querySelector('[data-act=mark]').addEventListener('click', ()=>{
+        if(!state.vol){ alert('Önce veri yükleyin.'); return; }
+        state.lm12[def.key] = {x:state.crosshair.x, y:state.crosshair.y, z:state.curZ};
+        renderLm12Rows();
+      });
+      row.querySelector('[data-act=clear]').addEventListener('click', ()=>{
+        delete state.lm12[def.key]; renderLm12Rows();
+      });
+      el.appendChild(row);
+    });
+    updateCentroidSize();
+  }
+
+  function centroidSizeMm(){
+    const pts = LM12_DEFS.map(d=>state.lm12[d.key]).filter(Boolean);
+    if(pts.length < LM12_DEFS.length) return null;
+    const phys = pts.map(toPhys);
+    const cx = phys.reduce((s,p)=>s+p[0],0)/phys.length;
+    const cy = phys.reduce((s,p)=>s+p[1],0)/phys.length;
+    const cz = phys.reduce((s,p)=>s+p[2],0)/phys.length;
+    let sumSq=0;
+    phys.forEach(p=>{ sumSq += (p[0]-cx)**2 + (p[1]-cy)**2 + (p[2]-cz)**2; });
+    return Math.sqrt(sumSq);
+  }
+  function updateCentroidSize(){
+    const cs = centroidSizeMm();
+    $('#centroidSizeVal').textContent = cs===null ? '— (12 landmark de gerekli)' : cs.toFixed(3)+' mm';
+  }
+
+  function vecSub(a,b){ return [a[0]-b[0],a[1]-b[1],a[2]-b[2]]; }
+  function vecCross(a,b){ return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
+  function vecDot(a,b){ return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]; }
+  function vecNorm(a){ const n=Math.hypot(a[0],a[1],a[2])||1e-9; return [a[0]/n,a[1]/n,a[2]/n]; }
+  function matFromRodrigues(axis, angle){
+    const [x,y,z]=axis, c=Math.cos(angle), s=Math.sin(angle), t=1-c;
+    return [
+      [t*x*x+c,   t*x*y-s*z, t*x*z+s*y],
+      [t*x*y+s*z, t*y*y+c,   t*y*z-s*x],
+      [t*x*z-s*y, t*y*z+s*x, t*z*z+c]
+    ];
+  }
+  function matTranspose(M){ return [[M[0][0],M[1][0],M[2][0]],[M[0][1],M[1][1],M[2][1]],[M[0][2],M[1][2],M[2][2]]]; }
+  function matVec(M,v){ return [
+    M[0][0]*v[0]+M[0][1]*v[1]+M[0][2]*v[2],
+    M[1][0]*v[0]+M[1][1]*v[1]+M[1][2]*v[2],
+    M[2][0]*v[0]+M[2][1]*v[1]+M[2][2]*v[2]
+  ]; }
+  function toPhys(p){ return [p.x*state.px, p.y*state.px, p.z*state.sl]; }
+
+  function computeAlignRotation(){
+    const A=toPhys(state.landmarks.PoR), B=toPhys(state.landmarks.PoL), C=toPhys(state.landmarks.OrL);
+    let n = vecNorm(vecCross(vecSub(B,A), vecSub(C,A)));
+    const target=[0,0,1];
+    if(vecDot(n,target)<0) n=[-n[0],-n[1],-n[2]];
+    let axis = vecCross(n,target);
+    const axisLen = Math.hypot(axis[0],axis[1],axis[2]);
+    let R;
+    if(axisLen<1e-6){
+      R = [[1,0,0],[0,1,0],[0,0,1]]; // zaten hizali
+    } else {
+      axis = [axis[0]/axisLen, axis[1]/axisLen, axis[2]/axisLen];
+      const angle = Math.acos(Math.max(-1,Math.min(1,vecDot(n,target))));
+      R = matFromRodrigues(axis, angle);
+    }
+    const pivot = [(A[0]+B[0]+C[0])/3, (A[1]+B[1]+C[1])/3, (A[2]+B[2]+C[2])/3];
+    return {R, pivot};
+  }
+
+  $('#btnAlign').addEventListener('click', ()=>{
+    if(!state.vol){ alert('Önce veri yükleyin.'); return; }
+    if(!state.landmarks.PoR || !state.landmarks.PoL || !state.landmarks.OrL){
+      alert('Önce üç noktayı da işaretleyin: Sağ Porion, Sol Porion, Sol Orbitale.'); return;
+    }
+    if(state.segments.some(s=>s.key.size>0) || state.measurements.length || state.curves.length){
+      if(!confirm('Hizalama, mevcut segment boyamalarını, ölçümleri ve eğrileri geçersiz kılar (koordinat sistemi değişecek). Devam edilsin mi?')) return;
+    }
+    $('#loadStatus').textContent = 'Hizalanıyor (yeniden örnekleme)...';
+    setTimeout(()=>{ doAlign(); $('#loadStatus').textContent = 'Hizalama tamamlandı.'; }, 30);
+  });
+
+  function doAlign(){
+    const {R, pivot} = computeAlignRotation();
+    const Rt = matTranspose(R);
+    const {w,h,z,data} = state.vol;
+    const out = new Uint8Array(w*h*z);
+    const px=state.px, sl=state.sl;
+
+    for(let zz=0; zz<z; zz++){
+      const relZ = zz*sl - pivot[2];
+      for(let yy=0; yy<h; yy++){
+        const relY = yy*px - pivot[1];
+        for(let xx=0; xx<w; xx++){
+          const relX = xx*px - pivot[0];
+          const orig = matVec(Rt, [relX,relY,relZ]);
+          const ox = Math.round((orig[0]+pivot[0])/px);
+          const oy = Math.round((orig[1]+pivot[1])/px);
+          const oz = Math.round((orig[2]+pivot[2])/sl);
+          let val=0;
+          if(ox>=0&&ox<w&&oy>=0&&oy<h&&oz>=0&&oz<z) val = data[oz*h*w+oy*w+ox];
+          out[zz*h*w+yy*w+xx]=val;
+        }
+      }
+    }
+    state.vol.data = out;
+
+    // yer noktalarini yeni koordinat sistemine tasi (dogrulama icin)
+    ['PoR','PoL','OrL'].forEach(k=>{
+      const p = state.landmarks[k];
+      const rel = vecSub(toPhys(p), pivot);
+      const newRel = matVec(R, rel);
+      state.landmarks[k] = {
+        x: Math.round((newRel[0]+pivot[0])/px),
+        y: Math.round((newRel[1]+pivot[1])/px),
+        z: Math.round((newRel[2]+pivot[2])/sl)
+      };
+    });
+    const zs=['PoR','PoL','OrL'].map(k=>state.landmarks[k].z);
+    const spread = (Math.max(...zs)-Math.min(...zs))*sl;
+
+    // 12 landmark noktalari da varsa ayni rotasyonla tasi (koordinat sistemi degisti)
+    Object.keys(state.lm12).forEach(k=>{
+      const p = state.lm12[k];
+      const rel = vecSub(toPhys(p), pivot);
+      const newRel = matVec(R, rel);
+      state.lm12[k] = {
+        x: Math.round((newRel[0]+pivot[0])/px),
+        y: Math.round((newRel[1]+pivot[1])/px),
+        z: Math.round((newRel[2]+pivot[2])/sl)
+      };
+    });
+
+    alert(`Hizalama tamam. Üç nokta arasındaki kalan kesit farkı: ${spread.toFixed(3)}mm (0'a yakın olmalı). Segmentler, ölçümler ve eğriler sıfırlandı, şimdi bu hizalanmış hacim üzerinde çalışabilirsiniz. (12 landmark işaretlenmişse rotasyonla birlikte taşındı.)`);
+
+    state.segments.forEach(s=>{ s.key=new Map(); s.filled=new Map(); });
+    state.measurements = [];
+    state.curves = [];
+    state.curZ = Math.floor(z/2);
+    state.crosshair = {x:Math.floor(w/2), y:Math.floor(h/2)};
+    $('#sliceSlider').value = state.curZ;
+    renderLandmarkRows();
+    renderLm12Rows();
+    renderCurveList();
+    renderAll();
+  }
+
+  // ---------------- Tools ----------------
+  document.querySelectorAll('.tools [data-tool]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.tool=b.dataset.tool;
+      document.querySelectorAll('.tools [data-tool]').forEach(x=>x.classList.toggle('active',x===b));
+    });
+  });
+  $('#brushSize').addEventListener('input', e=>{ state.brush=parseInt(e.target.value,10); $('#brushVal').textContent=state.brush+'px'; });
+
+  // ---------------- Slice navigation ----------------
+  $('#sliceSlider').addEventListener('input', e=>{ state.curZ=parseInt(e.target.value,10); renderAll(); });
+  $('#btnPrevSlice').addEventListener('click', ()=>{ if(state.vol){ state.curZ=Math.max(0,state.curZ-1); $('#sliceSlider').value=state.curZ; renderAll(); }});
+  $('#btnNextSlice').addEventListener('click', ()=>{ if(state.vol){ state.curZ=Math.min(state.vol.z-1,state.curZ+1); $('#sliceSlider').value=state.curZ; renderAll(); }});
+  window.addEventListener('keydown', e=>{
+    if(!state.vol) return;
+    if(e.key==='ArrowUp'){ state.curZ=Math.min(state.vol.z-1,state.curZ+1); $('#sliceSlider').value=state.curZ; renderAll(); }
+    if(e.key==='ArrowDown'){ state.curZ=Math.max(0,state.curZ-1); $('#sliceSlider').value=state.curZ; renderAll(); }
+  });
+
+  // ---------------- Rendering ----------------
+  function fitCanvas(canvas, physW, physH, maxW, maxH){
+    let s = Math.min(maxW/physW, maxH/physH);
+    canvas.width = Math.max(1,Math.round(physW*s));
+    canvas.height = Math.max(1,Math.round(physH*s));
+    return s;
+  }
+
+  function drawGrayAsCanvasSized(ctx, srcData, srcW, srcH, dstW, dstH){
+    const off=document.createElement('canvas'); off.width=srcW; off.height=srcH;
+    const octx=off.getContext('2d');
+    const imgData=octx.createImageData(srcW,srcH);
+    for(let i=0,p=0;i<srcW*srcH;i++,p+=4){ const v=srcData[i]; imgData.data[p]=v; imgData.data[p+1]=v; imgData.data[p+2]=v; imgData.data[p+3]=255; }
+    octx.putImageData(imgData,0,0);
+    ctx.imageSmoothingEnabled=false;
+    ctx.clearRect(0,0,dstW,dstH);
+    ctx.drawImage(off,0,0,srcW,srcH,0,0,dstW,dstH);
+  }
+
+  function overlayMask(ctx, mask, srcW, srcH, dstW, dstH, color, alpha){
+    if(!mask) return;
+    const off=document.createElement('canvas'); off.width=srcW; off.height=srcH;
+    const octx=off.getContext('2d');
+    const imgData=octx.createImageData(srcW,srcH);
+    const rgb = hexToRgb(color);
+    for(let i=0,p=0;i<srcW*srcH;i++,p+=4){
+      if(mask[i]){ imgData.data[p]=rgb.r; imgData.data[p+1]=rgb.g; imgData.data[p+2]=rgb.b; imgData.data[p+3]=Math.round(255*alpha); }
+    }
+    octx.putImageData(imgData,0,0);
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(off,0,0,srcW,srcH,0,0,dstW,dstH);
+  }
+  function hexToRgb(hex){ const n=parseInt(hex.slice(1),16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+
+  function getSliceGray(z){
+    const {w,h,data}=state.vol;
+    return data.subarray(z*w*h,(z+1)*w*h);
+  }
+  function getCoronalGray(y){
+    const {w,h,z,data}=state.vol;
+    const out=new Uint8Array(z*w);
+    for(let zz=0; zz<z; zz++){
+      const base=zz*h*w + y*w;
+      out.set(data.subarray(base,base+w), zz*w);
+    }
+    return out;
+  }
+  function getSagittalGray(x){
+    const {w,h,z,data}=state.vol;
+    const out=new Uint8Array(z*h);
+    for(let zz=0; zz<z; zz++){
+      const base=zz*h*w;
+      for(let y=0;y<h;y++) out[zz*h+y]=data[base+y*w+x];
+    }
+    return out;
+  }
+  function maskFor(seg,z){
+    const src = seg.filled.size ? seg.filled : seg.key;
+    return src.get(z) || null;
+  }
+  function coronalMaskFor(seg,y){
+    const {w,z}=state.vol;
+    const src = seg.filled.size ? seg.filled : seg.key;
+    const out=new Uint8Array(z*w);
+    for(const [zz,m] of src.entries()){ for(let x=0;x<w;x++) out[zz*w+x]=m[y*w+x]; }
+    return out;
+  }
+  function sagittalMaskFor(seg,x){
+    const {w,h,z}=state.vol;
+    const src = seg.filled.size ? seg.filled : seg.key;
+    const out=new Uint8Array(z*h);
+    for(const [zz,m] of src.entries()){ for(let y=0;y<h;y++) out[zz*h+y]=m[y*w+x]; }
+    return out;
+  }
+
+  function renderAll(){
+    if(!state.vol) return;
+    const {w,h,z} = state.vol;
+    const px=state.px, sl=state.sl;
+
+    // ---- Axial ----
+    const sA = fitCanvas(cAxial, w*px, h*px, 620, 620);
+    drawGrayAsCanvasSized(xAxial, getSliceGray(state.curZ), w, h, cAxial.width, cAxial.height);
+    state.segments.forEach(seg=>{
+      if(!seg.visible) return;
+      overlayMask(xAxial, maskFor(seg,state.curZ), w, h, cAxial.width, cAxial.height, seg.color, seg.id===state.curSeg?0.45:0.28);
+    });
+    drawCrosshairAxial();
+    drawRulerAxial();
+    drawCurvesAxial();
+    state.view.axial = {scale:sA};
+
+    // ---- Coronal (fixed y = crosshair.y) ----
+    const corPhysW = w*px, corPhysH = z*sl;
+    const sC = fitCanvas(cCor, corPhysW, corPhysH, 440, 280);
+    drawGrayAsCanvasSized(xCor, getCoronalGray(state.crosshair.y), w, z, cCor.width, cCor.height);
+    state.segments.forEach(seg=>{
+      if(!seg.visible) return;
+      overlayMask(xCor, coronalMaskFor(seg,state.crosshair.y), w, z, cCor.width, cCor.height, seg.color, 0.35);
+    });
+    drawCrosshairCor();
+    state.view.cor = {scale:sC};
+
+    // ---- Sagittal (fixed x = crosshair.x) ----
+    const sagPhysW = h*px, sagPhysH = z*sl;
+    const sS = fitCanvas(cSag, sagPhysW, sagPhysH, 440, 280);
+    drawGrayAsCanvasSized(xSag, getSagittalGray(state.crosshair.x), h, z, cSag.width, cSag.height);
+    state.segments.forEach(seg=>{
+      if(!seg.visible) return;
+      overlayMask(xSag, sagittalMaskFor(seg,state.crosshair.x), h, z, cSag.width, cSag.height, seg.color, 0.35);
+    });
+    drawCrosshairSag();
+    state.view.sag = {scale:sS};
+
+    $('#sliceLabel').textContent = `kesit ${state.curZ+1}/${z}`;
+    $('#axialInfo').textContent = `${w}×${h}`;
+    $('#corInfo').textContent = `y=${state.crosshair.y}`;
+    $('#sagInfo').textContent = `x=${state.crosshair.x}`;
+    renderSegList();
+    renderMeasurements();
+    renderDerived();
+  }
+
+  function drawCrosshairAxial(){
+    const s=fitScaleAxial();
+    xAxial.strokeStyle='rgba(255,255,0,.6)'; xAxial.lineWidth=1;
+    const cx=state.crosshair.x*s, cy=state.crosshair.y*s;
+    xAxial.beginPath(); xAxial.moveTo(cx,0); xAxial.lineTo(cx,cAxial.height); xAxial.moveTo(0,cy); xAxial.lineTo(cAxial.width,cy); xAxial.stroke();
+  }
+  function drawCrosshairCor(){
+    const s=cCor.width/state.vol.w;
+    const cx=state.crosshair.x*s, cy=(state.curZ)*(cCor.height/state.vol.z);
+    xCor.strokeStyle='rgba(255,255,0,.6)'; xCor.lineWidth=1;
+    xCor.beginPath(); xCor.moveTo(cx,0); xCor.lineTo(cx,cCor.height); xCor.moveTo(0,cy); xCor.lineTo(cCor.width,cy); xCor.stroke();
+  }
+  function drawCrosshairSag(){
+    const s=cSag.width/state.vol.h;
+    const cx=state.crosshair.y*s, cy=(state.curZ)*(cSag.height/state.vol.z);
+    xSag.strokeStyle='rgba(255,255,0,.6)'; xSag.lineWidth=1;
+    xSag.beginPath(); xSag.moveTo(cx,0); xSag.lineTo(cx,cSag.height); xSag.moveTo(0,cy); xSag.lineTo(cSag.width,cy); xSag.stroke();
+  }
+  function fitScaleAxial(){ return cAxial.width/state.vol.w; }
+
+  function drawRulerAxial(){
+    const s=fitScaleAxial();
+    xAxial.fillStyle='#ffe066'; xAxial.strokeStyle='#ffe066'; xAxial.lineWidth=2;
+    state.measurements.forEach(m=>{
+      if(m.p1 && m.p1.z===state.curZ){ xAxial.beginPath(); xAxial.arc(m.p1.x*s,m.p1.y*s,3,0,7); xAxial.fill(); }
+      if(m.p2 && m.p2.z===state.curZ){ xAxial.beginPath(); xAxial.arc(m.p2.x*s,m.p2.y*s,3,0,7); xAxial.fill(); }
+      if(m.p1 && m.p2 && m.p1.z===state.curZ && m.p2.z===state.curZ){
+        xAxial.beginPath(); xAxial.moveTo(m.p1.x*s,m.p1.y*s); xAxial.lineTo(m.p2.x*s,m.p2.y*s); xAxial.stroke();
+      }
+    });
+    if(pendingRuler && pendingRuler.z===state.curZ){
+      xAxial.beginPath(); xAxial.arc(pendingRuler.x*s,pendingRuler.y*s,3,0,7); xAxial.fill();
+    }
+  }
+
+  function drawCurvesAxial(){
+    const s=fitScaleAxial();
+    xAxial.lineWidth=2;
+    state.curves.forEach(c=>{
+      if(c.z!==state.curZ) return;
+      xAxial.strokeStyle='#7aa2f7'; xAxial.fillStyle='#7aa2f7';
+      xAxial.beginPath();
+      c.points.forEach((p,i)=>{ if(i===0) xAxial.moveTo(p.x*s,p.y*s); else xAxial.lineTo(p.x*s,p.y*s); });
+      xAxial.closePath(); xAxial.stroke();
+      c.points.forEach(p=>{ xAxial.beginPath(); xAxial.arc(p.x*s,p.y*s,2.5,0,7); xAxial.fill(); });
+    });
+    if(pendingCurve && pendingCurve.z===state.curZ && pendingCurve.points.length){
+      xAxial.strokeStyle='#ffe066'; xAxial.fillStyle='#ffe066';
+      xAxial.beginPath();
+      pendingCurve.points.forEach((p,i)=>{ if(i===0) xAxial.moveTo(p.x*s,p.y*s); else xAxial.lineTo(p.x*s,p.y*s); });
+      xAxial.stroke();
+      pendingCurve.points.forEach(p=>{ xAxial.beginPath(); xAxial.arc(p.x*s,p.y*s,2.5,0,7); xAxial.fill(); });
+    }
+  }
+
+  // ---------------- Axial interactions (paint / erase / ruler / nav / curve) ----------------
+  let painting=false;
+  let pendingRuler=null;
+  let pendingCurve=null; // {z, points:[{x,y},...]} while actively tracing
+
+  // ---- Curve (aperture area/perimeter) ----
+  function curveAreaPerimMm(points){
+    // shoelace (mm^2) + kapali cokgen cevre (mm); points in voxel index space, same slice
+    const px = state.px;
+    const n = points.length;
+    let area=0, perim=0;
+    for(let i=0;i<n;i++){
+      const a=points[i], b=points[(i+1)%n];
+      area += (a.x*px)*(b.y*px) - (b.x*px)*(a.y*px);
+      perim += Math.hypot((b.x-a.x)*px, (b.y-a.y)*px);
+    }
+    return {area: Math.abs(area)/2, perim};
+  }
+
+  $('#btnCurveStart').addEventListener('click', ()=>{
+    if(!state.vol){ alert('Önce veri yükleyin.'); return; }
+    state.tool='curve';
+    document.querySelectorAll('.tools [data-tool]').forEach(x=>x.classList.toggle('active', x.dataset.tool==='curve'));
+    pendingCurve = {z: state.curZ, points: []};
+    renderAll();
+  });
+  $('#btnCurveCancel').addEventListener('click', ()=>{ pendingCurve=null; renderAll(); });
+  $('#btnCurveFinish').addEventListener('click', ()=>{
+    if(!pendingCurve || pendingCurve.points.length<3){ alert('En az 3 nokta tıklayıp kapalı bir eğri oluşturun.'); return; }
+    const preset = $('#curvePreset').value;
+    const label = preset || ('Eğri '+(state.curves.length+1));
+    state.curves.push({id:state.nextId++, label, z:pendingCurve.z, points:pendingCurve.points});
+    pendingCurve = null;
+    renderCurveList(); renderAll();
+  });
+
+  function renderCurveList(){
+    const el = $('#curveList'); el.innerHTML='';
+    state.curves.forEach(c=>{
+      const {area,perim} = curveAreaPerimMm(c.points);
+      const row = document.createElement('div');
+      row.className='seg-row';
+      row.innerHTML = `
+        <div class="name" title="kesit ${c.z+1}">${c.label}</div>
+        <div class="vol">${area.toFixed(1)}mm² · ${perim.toFixed(1)}mm</div>
+        <button data-act="del" title="sil">✕</button>
+      `;
+      row.querySelector('[data-act=del]').addEventListener('click', ()=>{
+        state.curves = state.curves.filter(x=>x.id!==c.id); renderCurveList(); renderAll();
+      });
+      el.appendChild(row);
+    });
+  }
+
+  function axialToImg(evt){
+    const rect=cAxial.getBoundingClientRect();
+    const s=fitScaleAxial();
+    const cx=(evt.clientX-rect.left)*(cAxial.width/rect.width);
+    const cy=(evt.clientY-rect.top)*(cAxial.height/rect.height);
+    return {x:Math.max(0,Math.min(state.vol.w-1,Math.round(cx/s))), y:Math.max(0,Math.min(state.vol.h-1,Math.round(cy/s)))};
+  }
+  function paintAt(seg,x,y,val){
+    const {w,h}=state.vol;
+    if(!seg.key.has(state.curZ)) seg.key.set(state.curZ, new Uint8Array(w*h));
+    const mask=seg.key.get(state.curZ);
+    const r=state.brush;
+    const x0=Math.max(0,x-r), x1=Math.min(w-1,x+r), y0=Math.max(0,y-r), y1=Math.min(h-1,y+r);
+    for(let yy=y0;yy<=y1;yy++) for(let xx=x0;xx<=x1;xx++){
+      if((xx-x)*(xx-x)+(yy-y)*(yy-y)<=r*r) mask[yy*w+xx]=val;
+    }
+    seg.filled=new Map(); // invalidate stale fill
+  }
+
+  cAxial.addEventListener('mousedown', e=>{
+    if(!state.vol) return;
+    const p = axialToImg(e);
+    if(state.tool==='paint'||state.tool==='erase'){
+      const seg=getSeg(state.curSeg); if(!seg){ alert('Önce bir segment seçin.'); return; }
+      painting=true; paintAt(seg,p.x,p.y, state.tool==='paint'?1:0); renderAll();
+    } else if(state.tool==='ruler'){
+      if(!pendingRuler){ pendingRuler={z:state.curZ,x:p.x,y:p.y}; }
+      else {
+        const preset = $('#rulerPreset').value;
+        const label = preset || ('Ölçüm '+(state.measurements.length+1));
+        const m={id:state.nextId++, label, p1:pendingRuler, p2:{z:state.curZ,x:p.x,y:p.y}};
+        state.measurements.push(m); pendingRuler=null;
+      }
+      renderAll();
+    } else if(state.tool==='nav'){
+      state.crosshair={x:p.x,y:p.y}; renderAll();
+    } else if(state.tool==='curve'){
+      if(!pendingCurve || pendingCurve.z!==state.curZ) pendingCurve = {z:state.curZ, points:[]};
+      pendingCurve.points.push({x:p.x,y:p.y});
+      renderAll();
+    }
+  });
+  window.addEventListener('mousemove', e=>{
+    if(!painting || !state.vol) return;
+    const p=axialToImg(e);
+    const seg=getSeg(state.curSeg); if(!seg) return;
+    paintAt(seg,p.x,p.y, state.tool==='paint'?1:0);
+    renderAll();
+  });
+  window.addEventListener('mouseup', ()=>{ painting=false; });
+
+  // Coronal / Sagittal: nav only (click sets crosshair + jumps slice)
+  cCor.addEventListener('click', e=>{
+    if(!state.vol) return;
+    const rect=cCor.getBoundingClientRect();
+    const cx=(e.clientX-rect.left)*(cCor.width/rect.width);
+    const cy=(e.clientY-rect.top)*(cCor.height/rect.height);
+    const x = Math.round(cx/(cCor.width/state.vol.w));
+    const zz = Math.round(cy/(cCor.height/state.vol.z));
+    state.crosshair.x = Math.max(0,Math.min(state.vol.w-1,x));
+    state.curZ = Math.max(0,Math.min(state.vol.z-1,zz));
+    $('#sliceSlider').value=state.curZ;
+    renderAll();
+  });
+  cSag.addEventListener('click', e=>{
+    if(!state.vol) return;
+    const rect=cSag.getBoundingClientRect();
+    const cx=(e.clientX-rect.left)*(cSag.width/rect.width);
+    const cy=(e.clientY-rect.top)*(cSag.height/rect.height);
+    const y = Math.round(cx/(cSag.width/state.vol.h));
+    const zz = Math.round(cy/(cSag.height/state.vol.z));
+    state.crosshair.y = Math.max(0,Math.min(state.vol.h-1,y));
+    state.curZ = Math.max(0,Math.min(state.vol.z-1,zz));
+    $('#sliceSlider').value=state.curZ;
+    renderAll();
+  });
+
+  // ---------------- Measurements panel ----------------
+  function distMm(m){
+    const dx=(m.p2.x-m.p1.x)*state.px, dy=(m.p2.y-m.p1.y)*state.px, dz=(m.p2.z-m.p1.z)*state.sl;
+    return Math.sqrt(dx*dx+dy*dy+dz*dz);
+  }
+  function renderMeasurements(){
+    const tb=$('#measBody'); tb.innerHTML='';
+    state.measurements.forEach(m=>{
+      const tr=document.createElement('tr');
+      const mm = m.p2 ? distMm(m).toFixed(2) : '…';
+      tr.innerHTML=`<td><input type="text" value="${m.label}"></td><td class="mm">${mm}</td><td><button>✕</button></td>`;
+      tr.querySelector('input').addEventListener('input', e=>{ m.label=e.target.value; });
+      tr.querySelector('button').addEventListener('click', ()=>{
+        state.measurements=state.measurements.filter(x=>x.id!==m.id); renderMeasurements();
+      });
+      tb.appendChild(tr);
+    });
+    $('#measHint').style.display = state.measurements.length ? 'none':'block';
+  }
+
+  // ---------------- Türetilmiş parametreler (Orbital İndeks 9-10, Asimetri İndeksleri 19-25) ----------------
+  function pairBySide(entries){
+    const map = {};
+    entries.forEach(e=>{ map[e.label.trim().toLowerCase()] = e.value; });
+    const pairs = [];
+    const seen = new Set();
+    entries.forEach(e=>{
+      const lbl = e.label.trim();
+      if(!/sağ/i.test(lbl)) return;
+      const key = lbl.toLowerCase();
+      if(seen.has(key)) return;
+      const lLbl = lbl.replace(/sağ/gi, m=> (m[0]==='S' ? 'Sol':'sol'));
+      const lVal = map[lLbl.trim().toLowerCase()];
+      if(lVal!==undefined){
+        seen.add(key);
+        pairs.push({base: lbl.replace(/sağ/gi,'').replace(/\s+/g,' ').trim(), R:e.value, L:lVal});
+      }
+    });
+    return pairs;
+  }
+
+  function computeDerived(){
+    const measEntries = state.measurements.filter(m=>m.p2).map(m=>({label:m.label, value:distMm(m)}));
+    const segEntries = state.segments.map(s=>({label:s.name, value:segVolumeCm3(s)}));
+    const curveEntries = state.curves.map(c=>({label:c.label, value:curveAreaPerimMm(c.points).area}));
+
+    const measPairs = pairBySide(measEntries);
+    const segPairs = pairBySide(segEntries);
+    const curvePairs = pairBySide(curveEntries);
+
+    const out = [];
+    function AIrow(label, pair, unit){
+      if(!pair) return;
+      const avg=(pair.R+pair.L)/2;
+      const ai = avg ? Math.abs(pair.R-pair.L)/avg*100 : 0;
+      out.push({label:`Asimetri İndeksi — ${label}`, value:ai, unit:'%'});
+    }
+
+    const wPair = measPairs.find(p=>/genişlik/i.test(p.base));
+    const hPair = measPairs.find(p=>/yükseklik/i.test(p.base));
+    const dPair = measPairs.find(p=>/derinlik/i.test(p.base));
+    const volPair = segPairs[0];
+    const apPair = curvePairs.find(p=>/aperture/i.test(p.base));
+
+    let oiR=null, oiL=null;
+    if(wPair && hPair){
+      oiR = (hPair.R/wPair.R)*100;
+      oiL = (hPair.L/wPair.L)*100;
+      out.push({label:'Orbital İndeks Sağ', value:oiR, unit:''});
+      out.push({label:'Orbital İndeks Sol', value:oiL, unit:''});
+    }
+
+    AIrow('Genişlik', wPair, 'mm');
+    AIrow('Yükseklik', hPair, 'mm');
+    AIrow('Derinlik', dPair, 'mm');
+    AIrow('Hacim', volPair, 'cm3');
+    if(oiR!==null) AIrow('Orbital İndeks', {R:oiR,L:oiL});
+    AIrow('Aperture Alanı', apPair, 'mm2');
+
+    return out;
+  }
+
+  function renderDerived(){
+    const el = $('#derivedList');
+    const rows = computeDerived();
+    if(!rows.length){ el.innerHTML = 'Henüz eşleşen Sağ/Sol ölçüm çifti yok (örn. "Sağ Orbital Genişlik" + "Sol Orbital Genişlik" gibi aynı isimli çiftler otomatik eşleşir).'; return; }
+    el.innerHTML = rows.map(r=>`<div style="padding:2px 0;">${r.label}: <b class="mono">${r.value.toFixed(2)}${r.unit?(' '+r.unit):''}</b></div>`).join('');
+  }
+
+  // ---------------- Export CSV ----------------
+  $('#btnExportCsv').addEventListener('click', ()=>{
+    if(!state.vol){ alert('Önce veri yükleyin.'); return; }
+    const pid = $('#patientId').value.trim() || 'hasta';
+    let csv = 'Tip,Ad/Etiket,Deger,Birim\n';
+    state.segments.forEach(seg=>{
+      csv += `Hacim,${csvEsc(seg.name)},${segVolumeCm3(seg).toFixed(4)},cm3\n`;
+    });
+    state.measurements.forEach(m=>{
+      if(m.p2) csv += `Lineer,${csvEsc(m.label)},${distMm(m).toFixed(3)},mm\n`;
+    });
+    LM12_DEFS.forEach(def=>{
+      const p = state.lm12[def.key];
+      if(p) csv += `Landmark3D,${csvEsc(def.label)},"${(p.x*state.px).toFixed(3)}\\${(p.y*state.px).toFixed(3)}\\${(p.z*state.sl).toFixed(3)}",mm(x\\y\\z)\n`;
+    });
+    const cs = centroidSizeMm();
+    if(cs!==null) csv += `CentroidSize,Centroid Size (12 landmark),${cs.toFixed(3)},mm\n`;
+    state.curves.forEach(c=>{
+      const {area,perim} = curveAreaPerimMm(c.points);
+      csv += `AperturAlan,${csvEsc(c.label)},${area.toFixed(3)},mm2\n`;
+      csv += `AperturCevre,${csvEsc(c.label)},${perim.toFixed(3)},mm\n`;
+    });
+    computeDerived().forEach(r=>{
+      csv += `Turetilmis,${csvEsc(r.label)},${r.value.toFixed(3)},${r.unit||''}\n`;
+    });
+    downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}), `${pid}_olcumler.csv`);
+  });
+  function csvEsc(s){ return '"'+String(s).replace(/"/g,'""')+'"'; }
+  function downloadBlob(blob,name){
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // ---------------- Save / Load project (masks are NOT re-saved with image pixels, only masks+measurements+calibration) ----------------
+  function rleEncode(mask){
+    const runs=[]; let cur=mask[0]||0, count=0;
+    for(let i=0;i<mask.length;i++){
+      if(mask[i]===cur) count++;
+      else { runs.push(count); cur=mask[i]; count=1; }
+    }
+    runs.push(count);
+    return {first: mask[0]||0, runs};
+  }
+  function rleDecode(rle, n){
+    const mask=new Uint8Array(n); let val=rle.first, pos=0;
+    rle.runs.forEach(len=>{ if(val) mask.fill(1,pos,pos+len); pos+=len; val=1-val; });
+    return mask;
+  }
+
+  $('#btnSaveProject').addEventListener('click', ()=>{
+    if(!state.vol){ alert('Önce veri yükleyin.'); return; }
+    const proj = {
+      version:1,
+      patientId: $('#patientId').value.trim(),
+      px: state.px, sl: state.sl,
+      volDims: {w:state.vol.w,h:state.vol.h,z:state.vol.z},
+      segments: state.segments.map(seg=>({
+        name:seg.name, color:seg.color,
+        key: Array.from(seg.key.entries()).map(([z,m])=>({z, rle:rleEncode(m)}))
+      })),
+      measurements: state.measurements.map(m=>({label:m.label,p1:m.p1,p2:m.p2})),
+      landmarks: state.landmarks,
+      lm12: state.lm12,
+      curves: state.curves.map(c=>({label:c.label, z:c.z, points:c.points}))
+    };
+    downloadBlob(new Blob([JSON.stringify(proj)],{type:'application/json'}), `${proj.patientId||'hasta'}_proje.json`);
+  });
+
+  $('#btnLoadProject').addEventListener('click', ()=> $('#importProject').click());
+  $('#importProject').addEventListener('change', e=>{
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const proj=JSON.parse(reader.result);
+      if(!state.vol || state.vol.w!==proj.volDims.w || state.vol.h!==proj.volDims.h){
+        alert('UYARI: Önce bu projeye ait PNG klasörünü yükleyin (aynı boyutta), sonra projeyi tekrar açın.');
+        return;
+      }
+      $('#patientId').value = proj.patientId||'';
+      state.px=proj.px; $('#pxSpacing').value=proj.px;
+      state.sl=proj.sl; $('#sliceThk').value=proj.sl;
+      state.segments = proj.segments.map(s=>{
+        const seg={id:state.nextId++, name:s.name, color:s.color, key:new Map(), filled:new Map(), visible:true};
+        s.key.forEach(k=> seg.key.set(k.z, rleDecode(k.rle, proj.volDims.w*proj.volDims.h)));
+        return seg;
+      });
+      state.curSeg = state.segments[0]?.id ?? null;
+      state.measurements = proj.measurements.map(m=>({id:state.nextId++, label:m.label, p1:m.p1, p2:m.p2}));
+      state.landmarks = proj.landmarks || {PoR:null, PoL:null, OrL:null};
+      state.lm12 = proj.lm12 || {};
+      state.curves = (proj.curves||[]).map(c=>({id:state.nextId++, label:c.label, z:c.z, points:c.points}));
+      renderSegList(); renderLandmarkRows(); renderLm12Rows(); renderCurveList(); renderAll();
+    };
+    reader.readAsText(file);
+  });
+
+  renderSegList();
+  renderLandmarkRows();
+  renderLm12Rows();
+  renderCurveList();
+})();
+</script>
+</body>
+</html>

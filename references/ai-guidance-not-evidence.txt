@@ -1,0 +1,294 @@
+Ana içeriğe geçErişilebilirlik yardımı
+AI Modu
+Tümü
+Görseller
+Videolar
+Haberler
+Daha fazla
+Pro
+
+
+
+
+3d slicer programları
+3D dilimleme programları (slicer), üç boyutlu modelleri 3D yazıcının katman katman basabileceği G-Code komutlarına çeviren yazılımlardır. 
+
+devreyakan
+En Popüler 3D Dilimleme Programları
+Ultimaker Cura: Geniş eklenti desteği ve kullanıcı dostu yapısıyla en yaygın FDM (katman biriktirme) dilimleyicisidir. Ultimaker Cura resmi sitesinden indirilebilir.
+PrusaSlicer: Açık kaynaklıdır, gelişmiş ayarlara sahiptir ve özellikle Prusa yazıcılarla mükemmel uyum çalışır.
+OrcaSlicer: Hızı ve modern arayüzü sayesinde son dönemde çok popülerleşen güçlü bir yazılımdır.
+Bambu Studio: Bambu Lab yazıcılar için optimize edilmiş, gelişmiş bir arayüz sunan popüler bir araçtır.
+Lychee Slicer ve Chitubox: Genellikle reçineli (SLA/MSLA) 3D yazıcılar için tercih edilen lider dilimleme programlarındandır. 
+
+Co Print
+ +4
+En yaygın kullanılan dilimleme programlarından biri olan Cura hakkında detaylı bilgi için bu incelemeye göz atabilirsiniz:
+
+21:54
+Ultimaker Cura! 3D Yazıcılarda En İyi Baskılar İçin En Doğru Dilimleme ...
+65 B kez görüntülendi · 4 yıl önce
+
+YouTube · Robotistan
+Hangi tür 3D yazıcıyı (FDM veya Reçine/SLA) ve hangi marka modeli kullandığınızı söylerseniz, sizin için en uygun dilimleme programını ve temel ayarlarını önerebilirim.
+
+
+
+
+Co Print
+En Çok Kullanılan 5 Dilimleyici Uygulaması - Co Print
+OrcaSlicer, 3D yazıcı kullanıcıları arasında popülerlik kazanan güçlü bir dilimleme yazılımıdır. Kullanıcı dostu arayüzü ve hızıyl...
+
+
+Reddit
+·
+r/3Dprinting
+Popüler 3D Dilimleyici Yazılımı : r/3Dprinting - Reddit
+Lychee dilimleyici ve chitubox. İkisini de dene ve hangisini sevdiğine bak. Telluricpear719. •. 3 yıl önce. Lychee'de her türlü de...
+
+3D Grande
+2024'ün En İyi 3D Baskı Dilimleme Araçları
+1. Ultimaker Cura – Açık Kaynak ve Güçlü · 2. PrusaSlicer – Topluluk Gücüyle Gelişen Araç · 3. SuperSlicer – Hassas ve Özelleştiri...
+
+Tümünü göster
+tomografi ölçümleri için gerekli
+Medikal tomografi (CT/MRI) görüntülerinden 3D model elde etmek ve ölçüm yapmak için standart 3D yazıcı dilimleyicileri (Cura, Prusa vb.) doğrudan kullanılamaz. Önce DICOM formatındaki tomografi verilerini 3D modele (STL/OBJ) dönüştüren özel tıbbi görüntü işleme ve segmentasyon programları gereklidir.
+Tomografi Ölçüm ve 3D Dönüştürme Programları
+3D Slicer (Ücretsiz / Açık Kaynak): Tıbbi görüntü işleme, segmentasyon ve ölçüm için dünyada en çok kullanılan ücretsiz yazılımdır. Tomografi verilerini yükleyerek hacim, mesafe ve kemik yoğunluğu ölçümleri yapabilir, veriyi 3D modele dönüştürebilirsiniz.
+InVesalius (Ücretsiz / Açık Kaynak): Türkçe dil desteği de olan, tomografi dosyalarını 3D baskıya hazır hale getirmek ve temel ölçümleri yapmak için kullanışlı, hafif bir programdır.
+Materialise Mimics (Ücretli / Profesyonel): Medikal sektörde ve cerrahi planlamada endüstri standardı olan, FDA onaylı profesyonel bir yazılımdır. Çok gelişmiş ölçüm ve analiz araçlarına sahiptir.
+Segment3D / ITK-SNAP (Ücretsiz): Özellikle belirli dokuları ve organları otomatik ya da yarı otomatik olarak maskelemek (ayırmak) ve hacimsel ölçümler almak için tercih edilir.
+Bu süreçte tomografi verilerini işlerken izlemeniz gereken temel adımlar şunlardır:
+DICOM Verisi: Hastaneden aldığınız tomografi görüntülerinin tek bir dosya değil, DICOM formatında bir klasör (yüzlerce .dcm uzantılı kesit) olması gerekir.
+Segmentasyon (Maskeleme): Program içinde kemik, yumuşak doku veya damar gibi ölçmek istediğiniz bölgeyi yoğunluk değerlerine (Threshold) göre ayırmalısınız.
+Ölçüm ve Analiz: Program içindeki cetvel, hacim hesaplayıcı ve açı ölçer araçlarıyla gerekli medikal ölçümleri gerçekleştirebilirsiniz.
+STL Çıktısı (3D Baskı için): Eğer bu ölçümlerden sonra modeli 3D yazıcıda basmak isterseniz, yazılımdan .STL veya .OBJ çıktısı alarak Cura veya PrusaSlicer gibi programlara aktarabilirsiniz.
+Bu tomografi ölçümlerini akademik/klinik bir araştırma için mi yapıyorsunuz, yoksa amacınız sadece cerrahi bir modeli 3D yazıcıdan basmak mı?
+Bu metin yalnızca bilgilendirme amaçlıdır. Tıbbi öneriler veya teşhisler için bir profesyonele danışın. Yapay zeka tarafından üretilmiş yanıtlarda hata olabilir. Daha fazla bilgi
+
+
+
+orbita ölçümleri için hangi program kullanılmali
+Orbita (göz çukuru) ölçümleri ve 3D rekonstrüksiyonu için en ideal ve en yaygın kullanılan program 3D Slicer'dır.
+Orbita gibi asimetrik, hacimsel ve kemik defektlerinin milimetrik hesaplanması gereken hassas bölgelerde 3D Slicer, sunduğu tamamen ücretsiz ve açık kaynaklı gelişmiş modüller sayesinde dünya genelinde klinisyenler ve araştırmacılar tarafından ilk sırada tercih edilmektedir. Eğer bütçe kısıtlaması yoksa ve FDA onaylı, endüstriyel bir yazılım aranıyorsa Materialise Mimics de profesyonel alternatiftir.
+Orbita Ölçümlerinde Kullanılması Gereken Programlar
+1. 3D Slicer (En Güçlü ve Ücretsiz Seçenek)
+Orbita analizleri için tasarlanmış özel eklentilere (Extensions) sahiptir. Tamamen ücretsizdir ve akademik çalışmaların %90'ında bu program kullanılır.
+Segment Editor Modülü: Orbita kemik sınırlarını ve göz küresini (bulbus okuli) diğer yumuşak dokulardan kolayca ayırmanızı sağlar.
+SlicerIGT / Markups Modülü: Orbita içi anatomik referans noktalarını işaretleyerek milimetrik mesafe, açı ve hat ölçümleri yapmanıza imkan tanır.
+Hacim Hesaplama (Segment Statistics): Travma sonrası oluşan orbita hacim değişikliklerini (enftalmi riskini belirlemek için) sağlıklı karşı taraf (kontralateral) ile kıyaslayarak otomatik hesaplar.
+2. ITK-SNAP (Hızlı ve Pratik Segmentasyon)
+Eğer amacınız sadece hızlıca göz küresini veya orbita boşluğunu maskelemek ve hacim ölçüsü almaksa, ITK-SNAP’in aktif kontur (Snaking) algoritması orbita yumuşak dokularını saniyeler içinde otomatik olarak çevreler ve hacmini verir. Ölçüm araçları 3D Slicer kadar geniş olmasa da hacimsel ölçüm hızı çok yüksektir.
+3. Materialise Mimics (Profesyonel & FDA Onaylı)
+Hastanelerde, cerrahi planlamalarda ve kişiye özel titanyum orbita tabanı implantı (mesh) üretiminde kullanılan ticari yazılımdır. Otomatik ayna görüntüsü alma (mirroring) özelliği sayesinde, hasarlı orbitayı sağlıklı tarafın anatomisine göre saniyeler içinde yeniden yapılandırabilir ve aradaki kayıp hacmi milimetrik olarak raporlar.
+3D Slicer ile Orbita Ölçümü Yaparken İzlenen Adımlar
+Görüntü Kalitesi: Orbita kemik duvarları (özellikle medial duvar ve taban) çok ince olduğundan, tomografinin kesit kalınlığının 0.5 mm - 1 mm arasında (High-Resolution CT) olması doğru ölçüm için kritiktir.
+Hacim Simetrisi (Mirroring): Tek taraflı orbita kırıklarında veya tümörlerinde, sağlıklı tarafın görüntüsü simetrisine kopyalanır (Aynalama). İki orbita arasındaki hacim farkı 2 ml (cc) üzerindeyse cerrahi olarak enftalmi (gözün geriye kaçması) riski olduğu hesaplanır.
+Hacim Hesaplama: Segment Statistics eklentisi kullanılarak orbitanın toplam hacmi saniyeler içinde mm³ veya cm³ (ml) cinsinden raporlanır.
+Yapacağınız orbita çalışması travma/kırık sonrası hacim analizi mi, yoksa antropometrik (mesafe/açı) bir araştırma mı? Amacınızı belirtirseniz 3D Slicer içindeki en doğru modülleri ve eklenti isimlerini detaylandırabilirim.
+
+
+
+antropometrik bir araştırma
+Antropometrik bir araştırma yapıyorsanız, odak noktanız hacim hesaplamasından ziyade anatomik referans noktalarının (landmarks) milimetrik doğruluğu, açısal ölçümler, düzlemler arası mesafeler ve istatistiksel tutarlılık olacaktır.
+Bu senaryoda kesinlikle 3D Slicer programını kullanmalısınız. 3D Slicer, antropometrik analizler ve morfometri (şekil analizi) için geliştirilmiş, dünyada hakemli akademik dergiler tarafından en çok kabul gören bilimsel araç setlerine sahiptir.
+3D Slicer'da Antropometrik Ölçüm İçin Gerekli Modüller
+3D Slicer'ı bilgisayarınıza kurduktan sonra üst menüdeki Extension Manager (Eklenti Mağazası) üzerinden şu ücretsiz paketleri yüklemeniz araştırmanızı standardizasyon seviyesine taşıyacaktır:
+SlicerMorph (En Kritik Eklenti): Biyolojik ve medikal antropometride 3D veri toplamak için özel olarak geliştirilmiş ana pakettir. İçindeki Landmarks araçları sayesinde orbita çevresindeki ve içindeki noktaları hatasız işaretleyebilirsiniz.
+Markups Modülü: Doğrudan programla birlikte gelir. İki nokta arası doğrusal mesafe (Linear Distance), eğri hat uzunluğu (Curve) ve kemik yapıların birbiriyle yaptığı açıyı (Angle) ölçmek için kullanılır.
+Segment Editor: Orbita içi yapıları (örneğin Frontal, Zygomatic, Maxillary kemik sınırlarını veya Optik Kanalı) 3D olarak boyayıp izole etmek ve bu yapılar üzerinden antropometrik yüzey alanları hesaplamak için kullanılır.
+Orbita Antropometrisinde Sıkça Kullanılan Referans Noktaları
+Araştırmanızın metodoloji kısmını oluştururken 3D Slicer üzerinde genellikle şu standart (kranyometrik) noktalar işaretlenir ve ölçülür:
+Daktyon (d): Orbita iç duvarında, frontomaksiller ve lakrimomaksiller sutürlerin kesiştiği nokta (İç sınır).
+Ektokonçiyon (ek): Orbitanın dış kenarında, frontal ve zigomatik kemiklerin birleştiği, yatay eksendeki en uzak nokta (Dış sınır).
+Supraorbitale (sci): Üst orbita kenarının en üst noktası.
+Infraorbitale (ior): Alt orbita kenarının en alt noktası.
+3D Slicer ile Yapabileceğiniz Temel Ölçümler:
+Orbita Genişliği (Orbital Width): Daktyon ve Ektokonçiyon noktaları arasındaki doğrusal mesafe.
+Orbital Yükseklik (Orbital Height): Üst ve alt kenarların birbirine en uzak olduğu dik mesafe.
+Orbital İndeks (Orbital Index): 
+
+
+
+
+
+
+
+
+ formülüyle orbitanın mikroseme, mezoseme veya megaseme tipinde olup olmadığının sınıflandırılması.
+İnterorbital Mesafe: Sağ ve sol göz çukurlarının iç sınırları arasındaki mesafe.
+Akademik Araştırmanız İçin Altın İpuçları 💡
+Gözlemciler Arası Güvenilirlik (Inter-observer Reliability): Antropometrik çalışmalarda hakemlerin en çok dikkat ettiği şey ölçümün tekrarlanabilirliğidir. Noktaları (Landmarks) 2 veya 3 farklı araştırmacıya ayrı ayrı işaretletip, aradaki uyumu ICC (Intraclass Correlation Coefficient) testi ile makalenizde raporlamalısınız. 3D Slicer, bu koordinatları .fcsv (CSV tabanlı) olarak dışa aktarır, böylece SPSS veya R'da kolayca analiz edebilirsiniz.
+Yönlendirme (Orientation): Ölçümlere başlamadan önce tüm hastaların tomografilerini aynı standart anatomik düzleme (örneğin Frankfort Yatay Düzlemi) getirmeniz gerekir. 3D Slicer içindeki Transforms modülü ile kafataslarını tek bir düzleme sabitleyerek ölçüm hatasını sıfıra indirebilirsiniz.
+Bu antropometrik çalışmayı belirli bir popülasyonun (örn. Türk popülasyonu) normatif değerlerini belirlemek için mi yapıyorsunuz, yoksa kadın-erkek arasındaki eşeyli dimorfizmi (cinsiyet farklarını) incelemek için mi?
+
+
+
+evet cinsiyet farkını araştırıyorum
+Harika bir çalışma konusu! Orbita antropometrisinde eşeyli dimorfizm (cinsiyet farkı), hem adli tıp (iskelet kalıntılarından cinsiyet tayini) hem de plastik cerrahi ve antropoloji literatüründe oldukça yüksek kabul gören ve ilgi çeken bir alandır.
+Erkeklerde orbita yapısı genellikle daha köşeli, karemsi ve genişken; kadınlarda daha yuvarlak, keskin kenarlı ve nispeten daha büyüktür (kafatası oranına göre).
+Bu çalışmayı 3D Slicer kullanarak uluslararası standartlarda bir makaleye dönüştürmek için uygulamanız gereken metodoloji ve veri toplama adımları şu şekildedir:
+1. Veri Hazırlığı ve Standardizasyon (Çok Kritik)
+Frankfort Yatay Düzlemi (Transforms Modülü): Ölçümlere başlamadan önce her hastanın tomografisini standart bir konuma getirmelisiniz. Sağ/sol Porion (kulak deliğinin üst kenarı) ve sol Orbitale (göz çukurunun en alt sınırı) noktalarını aynı yatay düzleme hizalayın. Bu işlem, açılı çekilmiş tomografilerin ölçümü bozmasını engeller.
+2. 3D Slicer Üzerinde Ölçüm Protokolü
+Cinsiyet farkını ortaya koymak için Markups ve SlicerMorph eklentilerini kullanarak şu verileri toplamalısınız:
+Doğrusal Ölçümler (Linear Metrics):
+Orbita Genişliği (Maximal Orbital Breadth): d - ek arası mesafe. Erkeklerde anlamlı derecede yüksek çıkması beklenir.
+Orbital Yükseklik (Maximal Orbital Height): Üst ve alt kenar arası. Kadınlarda orbitanın yuvarlak yapısından dolayı oransal olarak daha belirgindir.
+İnterorbital Mesafe: Sağ d ile sol d arası mesafe.
+Açısal Ölçümler (Angulation): Orbita dış duvarının (Zygomatic) sagittal düzlemle yaptığı açıyı ölçün. Cinsiyetler arasında yüzün projeksiyon açısı (fırlaklığı) farklılık gösterir.
+Yüzey Alanı (Surface Area): Segment Editor ile orbita girişini (aditus orbitae) çevreleyip alanını (mm²) hesaplayın.
+3. Verileri İstatistiğe Hazırlama (Dışa Aktarma)
+3D Slicer'da işaretlediğiniz tüm noktalar ve ölçümler otomatik olarak birer 3D koordinata (X, Y, Z) dönüşür.
+Bu verileri .csv veya .fcsv formatında bilgisayarınıza kaydedin.
+SlicerMorph içindeki GPA (Generalized Procrustes Analysis) aracını kullanarak tüm hastaların orbita şekillerini üst üste çakıştırabilir (superimposition) ve ortalama bir "Erkek Orbitası" ile "Kadın Orbitası" 3D şekil haritası (heat map) çıkarabilirsiniz. Bu, makalenize görsel olarak harika bir değer katar.
+İstatiksel Analiz için İpuçları (SPSS veya R)
+Independent Samples t-Test (veya Mann-Whitney U): Erkek ve kadın gruplarının ortalama genişlik, yükseklik ve indeks değerlerini kıyaslamak için kullanın (p < 0.05 anlamlılık seviyesi).
+Daimi Ayırma Analizi (Discriminant Function Analysis - DFA): Hakemlerin en çok görmek istediği analiz budur. Orbita ölçümlerine bakarak bir kafatasının yüzde kaç doğrulukla erkek veya kadın olduğunu tahmin eden bir formül/model oluşturmanızı sağlar (Örn: "Orbita genişliği ve yüksekliği birlikte kullanıldığında cinsiyeti %82 doğrulukla tahmin etmektedir").
+Çalışmanız için toplam kaç vaka (örneklem boyutu) planladınız ve tomografi kesit kalınlıklarınız 1 mm'nin altında mı? (Eğer kesitler kalınsa küçük milimetrik farkları yakalamak zorlaşabilir, bunu metodolojide tartışmak gerekir).
+
+
+
+3d slicer üzerinde frankfort yatay düzlemi (transforms modülü) nasıl kullanacağımi adım adım anlatır mısın
+3D Slicer üzerinde Frankfort Yatay Düzlemi (Frankfort Horizontal Plane - FHP) oluşturmak ve tüm tomografileri bu standart düzleme göre hizalamak (oryantasyon), antropometrik araştırmanızın tekrarlanabilirliği ve bilimsel doğruluğu için en kritik adımdır.
+Bu düzlem geleneksel olarak şu 3 anatomik referans noktasının aynı yatay düzleme (Z ekseni koordinatının eşitlenmesi) getirilmesiyle kurulur:
+Sağ Porion (Po_R): Sağ dış kulak yolunun (meatus acusticus externus) en üst noktası.
+Sol Porion (Po_L): Sol dış kulak yolunun en üst noktası.
+Sol Orbitale (Or_L): Sol göz çukurunun (orbita) alt kenarının en alt noktası.
+İşte bu işlemi 3D Slicer'da Transforms ve Markups modüllerini kullanarak adım adım gerçekleştirme rehberi:
+Adım 1: Anatomik Noktaları İşaretleyin (Markups Modülü)
+Tomografinizi yükleyin ve sağ üstteki modül menüsünden Markups modülüne gidin.
+Yukarıdaki araç çubuğundan Fiducial (Nokta koyma) aracını seçin.
+Tomografinin 3D görünümünde veya kesit ekranlarında şu üç noktayı titizlikle işaretleyin:
+Sağ kulak deliğinin üst sınırı (Po_R)
+Sol kulak deliğinin üst sınırı (Po_L)
+Sol göz çukurunun alt kenarının en alt noktası (Or_L)
+Soldaki kontrol panelinde bu noktaların isimlerini net anlaşılacak şekilde (Po_R, Po_L, Or_L) yeniden adlandırın.
+Adım 2: Bir Transform (Hizalama Matrisi) Oluşturun
+Modül arama çubuğuna yazarak veya menüden Transforms modülüne geçiş yapın.
+Active Transform satırının sağındaki açılır menüden Create new LinearTransform (Yeni Doğrusal Transform Oluştur) seçeneğini tıklayın. İsmini isterseniz “Frankfort_Hizalama” olarak değiştirebilirsiniz.
+Adım 3: Tomografiyi Transform Altına Alın
+Yine Transforms modülü ekranının alt kısmında yer alan Apply Transform (Transform Uygula) bölümünü bulun.
+Transformable (Dönüştürülebilir Öğeler) listesinde kendi tomografi dosyanızı (Volume) ve az önce koyduğunuz referans noktalarını (Markups) seçin.
+Sağa bakan ok butonuna ( > ) basarak bu öğeleri sağ taraftaki Transformed (Dönüştürülmüş) sütununa geçirin.
+Not: Bu işlem, yapacağımız döndürme hareketlerinin hem tomografiyi hem de koyduğumuz noktaları aynı anda etkilemesini sağlar.
+Adım 4: Göz Kararı Ön Hizalama Yapın (İsteğe Bağlı Ama Pratik)
+Transforms modülünün üst kısmındaki Translation (Öteleme) ve Rotation (Döndürme) kaydırıcı çubuklarını (slider) kullanın.
+Kafatasını eksenler etrafında döndürerek porion noktalarını kırmızı (Axial) kesit çizgisine paralel, göz çukurunun altını da bu düzleme değecek şekilde göz kararı yatay pozisyona getirin.
+Adım 5: Matematiksel Olarak Frankfort Düzlemini Eşitleyin
+Tam milimetrik standardizasyon sağlamak için noktaların koordinat değerlerini sıfırlamanız veya eşitlemeniz gerekir:
+Tekrar Markups modülüne dönün. Aşağıdaki listede işaretlediğiniz noktaların X (Sağ-Sol), Y (Ön-Arka), Z (Üst-Alt) koordinatlarını göreceksiniz.
+Frankfort düzleminin kuralı gereği, bu üç noktanın Z (Üst-Alt) değerlerinin birbirine eşit olması gerekir.
+Transforms modülündeki ince döndürme (Rotation) butonlarını kullanarak, Po_R, Po_L ve Or_L noktalarının üçünün de Z koordinatı aynı değere gelene kadar kafatasını milimetrik olarak eğin ve döndürün. Üç değer eşitlendiğinde kafa tam olarak Frankfort düzlemine oturmuş demektir.
+Adım 6: Hizalamayı Kalıcı Hale Getirin (Freeze/Hard Harden)
+Kafatasını mükemmel yatay konuma getirdikten sonra bu yeni koordinat sistemini sabitlemeniz gerekir.
+Transforms modülüne geri dönün.
+Ekranın altındaki Transformable / Transformed tablosunun alt kısmında bulunan Hard Harden (Kalıcı Yap) veya Freeze butonuna tıklayın.
+Bu işlem transform matrisini tomografinin içerisine gömer. Artık transform modülünü kapatsanız bile kafatası yeni, standart Frankfort yatay pozisyonunda kalacaktır.
+Bu adımı tamamladıktan sonra, tüm hastalarınızın kafatası uzayda birebir aynı açıyla duruyor olacaktır. Artık orbita genişliği, yüksekliği ve hacmi için yapacağınız tüm diğer ölçümler hatasız ve birbiriyle kıyaslanabilir hale gelir.
+İlk hastanızın tomografisinde bu adımları denerken herhangi bir modülde veya koordinatları eşitleme aşamasında takıldığınız bir yer olursa, ekran görüntüsünü tarif edin, hemen detaylandıralım.
+
+
+
+3D Slicer Üzerinde Ölçüm ProtokolüCinsiyet farkını ortaya koymak için Markups ve SlicerMorph eklentilerini kullanarak yapılması gereken ölçümleri adım adım anlat
+3D Slicer ve SlicerMorph eklentisi kullanarak orbita (göz çukuru) üzerinde cinsiyet farkını (eşeyli dimorfizm) ortaya koyacak antropometrik ölçüm protokolünü adım adım şu şekilde uygulayabilirsiniz:
+Bu protokol iki aşamadan oluşur: Doğrusal/Açısal Ölçümler (geleneksel antropometri) ve Geometrik Morfometri (SlicerMorph ile şekil analizi).
+🟢 1. Aşama: Geleneksel Ölçümler (Mesafe, Açı ve Alan)
+Bu aşamada hastanın sağ ve sol orbitasından temel metrik verileri toplayıp SPSS/R gibi programlara aktarılacak sayısal değerleri elde edeceksiniz.
+Adım 1.1: Anatomik Referans Noktalarını (Landmarks) Koyun
+Üst menüden Markups modülünü açın.
+Create sekmesinden Fiducial (Nokta) aracını seçin ve yeni bir liste oluşturup adını "Orbita_Landmarks" yapın.
+3D kemik modeli veya tomografi kesitleri üzerinde şu 4 ana noktayı titizlikle işaretleyin (Örnek sağ orbita için):
+d (Daktyon): Orbita iç duvarında, lakrimomaksiller ve frontomaksiller sutürlerin kesiştiği en iç nokta.
+ek (Ektokonçiyon): Orbita dış kenarında, yatay eksende d noktasının tam karşısındaki en uzak dış nokta.
+sci (Supraorbitale): Üst orbita kenarının en üst noktası.
+ior (Infraorbitale): Alt orbita kenarının en alt noktası.
+Adım 1.2: Mesafe ve Genişlik Ölçümü (Linear Distance)
+Markups modülündeyken yukarıdaki araç çubuğundan Line (Çizgi) aracını seçin.
+Orbita Genişliği: Az önce koyduğunuz d noktasından başlayıp ek noktasına kadar bir çizgi çekin. Sol panelde bu çizginin milimetrik uzunluğunu (örn. 38.2 mm) not edin veya ismini Genişlik_Sag yapın. (Erkeklerde bu değerin anlamlı derecede büyük çıkması beklenir).
+Orbita Yükseklik: Aynı şekilde sci noktasından ior noktasına dik bir çizgi çekin (Yukseklik_Sag).
+Adım 1.3: Orbita Giriş Alanı Ölçümü (Area)
+Erkeklerde orbita giriş alanı genellikle kadınlara göre daha geniştir.
+Araç çubuğundan Plane (Düzlem) veya Closed Curve (Kapalı Eğri) aracını seçin.
+Orbita kemik çerçevesinin (margo orbitalis) etrafından dolanarak noktaları birleştirin ve kapatın.
+Modül panelinde bu eğrinin çevrelediği Yüzey Alanını (Surface Area) mm² cinsinden göreceksiniz.
+🔵 2. Aşama: SlicerMorph ile 3D Şekil Analizi (Geometrik Morfometri)
+Sadece cetvelle ölçüm yapmak bazen orbitanın "şekil" (yuvarlaklık, köşelilik) farklılıklarını yakalamaya yetmez. SlicerMorph eklentisi, cinsiyete bağlı şekil varyasyonlarını matematiksel olarak haritalandırır.
+Adım 2.1: SlicerMorph Kurulumu ve Hazırlık
+Üst menüden Developer Tools > Extension Manager'a girin.
+Arama çubuğuna SlicerMorph yazıp yükleyin ve programı yeniden başlatın.
+Modüller menüsünden SlicerMorph > GPA (Generalized Procrustes Analysis) modülünü açın.
+Adım 2.2: Yarı-Landmark (Semi-landmarks) Oluşturma (İleri Seviye Şekil Analizi)
+Sadece 4 nokta orbitanın eğriliğini tam temsil etmeyebilir. SlicerMorph içindeki PseudoMarket veya Curve aracı ile orbita kenarına ardışık 20 adet nokta yerleştirebilirsiniz.
+Markups modülünden Curve (Eğri) seçin.
+Orbita üst kenarı boyunca (sci çevresi) bir eğri çizin.
+SlicerMorph eklentisi bu eğriyi otomatik olarak eşit aralıklı 10-15 adet "yarı-noktaya" (semi-landmark) böler. Bu sayede erkeklerdeki daha düz/köşeli üst kenar ile kadınlardaki daha kavisli yapı arasındaki geometrik farkı yakalayabilirsiniz.
+Adım 2.3: Tüm Hastaların Verilerini Çakıştırma (GPA Analizi)
+Tüm erkek ve kadın hastalarınızın tomografilerinde bu noktaları koyup kaydettikten sonra (.fcsv formatında):
+SlicerMorph GPA modülüne gidin.
+Tüm hastalarınızın nokta dosyalarını içeren klasörü Input Landmark Directory olarak seçin.
+Analizi başlatın (Run). Program tüm kafataslarını boyutlarından (size) bağımsız hale getirerek sadece şekil (shape) yönünden üst üste çakıştıracaktır.
+Adım 2.4: Cinsiyet Farkı Görselleştirme (Heatmap / Şekil Değişimi)
+GPA analizi bittikten sonra modülün Visualization sekmesine gelin.
+Mean Shape (Ortalama Şekil) seçeneğinden hastalarınızı "Erkek" ve "Kadın" olarak iki gruba ayırın.
+Program size Ortalama Erkek Orbitası ile Ortalama Kadın Orbitası arasındaki farkı gösteren 3 boyutlu renkli bir ısı haritası (Heatmap) verecektir.
+Örneğin: Erkeklerde süperolateral kenarın ne kadar dışa/arkaya doğru genişlediğini mavi-kırmızı renk skalasıyla makaleniz için görselleştirebilirsiniz.
+📊 Verileri İstatistiğe Aktarma
+Tüm bu işlemler bitince, Markups panelinin altındaki Export to File seçeneğini kullanarak tüm mesafe, açı ve alan değerlerini .csv (Excel) dosyası olarak kaydedin.
+Excel dosyanıza her hasta için bir "Cinsiyet" (0=Kadın, 1=Erkek) sütunu ekleyerek SPSS veya R programında Independent Samples t-test ve ardından Discriminant Function Analysis (DFA) analizlerine başlayabilirsiniz.
+Çalışmanızdaki vakaların yaş dağılımı nasıl? Yaş ilerledikçe orbita kemiklerinde rezorpsiyon (erime) olabildiği için, gruplar arasında yaş ortalamasının benzer olması (yaş eşleştirmeli olması) analizin doğruluğu açısından önemlidir. İsterseniz yaş faktörünü istatistikte nasıl kontrol edebileceğinizi de detaylandırabilirim.
+
+
+
+orbita ölçümü için segment editör modülünü nasıl kullanılır adım adım anlat
+3D Slicer üzerindeki Segment Editor modülü, tomografi kesitlerindeki gri tonlama (yoğunluk/Hounsfield Unit) değerlerini kullanarak orbita kemik hacmini veya orbita içi yumuşak doku/göz küresi hacmini diğer yapılardan izole etmek (maskelemek) için kullanılır.
+Antropometrik araştırmanızda orbita hacmi veya yüzey modellemesi elde etmek için Segment Editor modülünü şu adımları izleyerek kullanabilirsiniz:
+Adım 1: Modülü Açın ve Yeni Segment Oluşturun
+Tomografinizi yükledikten sonra üst menüdeki modül listesinden Segment Editor'ü seçin.
+Master Volume kısmında çalışacağınız tomografi dosyasının seçili olduğundan emin olun.
+Segmentation satırının sağındaki + Add butonuna tıklayın. Listeye Segment_1 adında yeşil renkli bir katman eklenecektir. Çift tıklayarak adını "Orbita_Kemik" veya "Orbita_Hacim" olarak değiştirebilirsiniz.
+Adım 2: Yoğunluk Sınırını Belirleyin (Threshold)
+Kemik ve yumuşak dokuyu birbirinden ayırmak için tomografinin gri ton değerlerini filtrelemeniz gerekir.
+Aşağıdaki efektler (Effects) panelinden Threshold (Eşik Deleme) butonuna tıklayın.
+Alt kısımda beliren kaydırıcı çubukla (slider) oynayarak hedef yapınızı seçin:
+Hedefiniz Kemik İse: Genellikle alt sınırı 200 HU ile 300 HU arasına getirin (Üst sınırı maksimumda bırakın). Ekranda sadece kemik dokuların yanıp sönen bir renkle (örn. yeşil) kaplandığını göreceksiniz.
+Hedefiniz Yumuşak Doku/Göz Küresi İse: Sınırı -100 HU ile 100 HU arasına getirerek sadece yumuşak dokuları parlatın.
+Doğru dokuyu kapladığınızdan emin olduktan sonra mutlaka alttaki Apply (Uygula) butonuna basın.
+Adım 3: Orbitayı Diğer Yapılardan İzole Edin (Scissors / Paint)
+Threshold efektini uyguladığınızda tüm kafatası kemikleri seçilmiş olacaktır. Sadece orbita bölgesini bırakmak için diğer kemikleri temizlemeniz gerekir.
+Efektler arasından Scissors (Makas) aracını seçin.
+Operation kısmını Erase Outside (Dışını Sil) olarak ayarlayın.
+Shape kısmını Free-form (Serbest çizim) yapın.
+3D ekranda veya kesit ekranlarında, hedeflediğiniz orbitanın etrafını genişçe çizerek seçin. Çizmeyi bitirdiğinizde orbita dışındaki tüm kafatası kemikleri seçimden silinecektir.
+Eğer içeride kalan istenmeyen küçük kemik parçaları varsa, bu sefer Operation ayarını Erase Inside yapıp o küçük parçaların üzerini çizerek temizleyebilirsiniz.
+Adım 4: Boşlukları ve İnce Duvarları Kapatın (Margin / Smoothing)
+Orbita tabanı ve medial duvar (lamina papyracea) çok ince olduğundan, tomografide bazen buralar boşlukmuş gibi (Threshold hatası) görünebilir.
+Smoothing (Düzleştirme) efektine tıklayın.
+Method olarak Closing (Fill holes) seçeneğini seçin. Bu işlem, kemikteki artefaktlardan veya ince yapılardan kaynaklanan yapay küçük delikleri otomatik olarak doldurur. Apply diyerek onaylayın.
+Adım 5: Sağ ve Sol Orbitayı Birbirinden Ayırma (İsteğe Bağlı)
+Eğer sağ ve sol orbitayı aynı anda boyadıysanız ve bunları ayrı ayrı ölçmek istiyorsanız:
+Island (Ada) efektine tıklayın.
+Split Islands to Segments (Adaları Segmentlere Böl) butonuna basın.
+Program birbiriyle fiziksel bağlantısı olmayan sağ ve sol orbitayı otomatik olarak iki ayrı katmana ayırır ve farklı renkler verir.
+Adım 6: 3D Modeli Gösterin ve Hacmi Ölçün
+Segment Editor modülünün hemen üst kısmında yer alan Show 3D butonuna tıklayın. Bilgisayarınızın hızına bağlı olarak birkaç saniye içinde orbitanın 3 boyutlu katı modeli ekrana gelecektir.
+Ölçüm sonuçlarını almak için üst modül menüsünden Segment Statistics (Segment İstatistikleri) modülüne geçiş yapın.
+Input Segmentation kısmından az önce oluşturduğunuz orbita modelini seçin ve Apply butonuna basın.
+Aşağıda açılan tabloda, orbitanızın tam hacmini Cubic Millimeters (mm³) veya Volume cm³ (ml) cinsinden göreceksiniz. Cinsiyetler arası hacimsel kıyaslama için bu değerleri de Excel formunuza kaydedebilirsiniz.
+Bu aşamaları denerken tomografinizin kontrastından dolayı Threshold (eşikleme) yaparken kemik sınırlarını net yakalamakta zorlanırsanız, tomografinin kesit kalınlığı değerini bana iletebilirsiniz; filtreleme ayarlarını daha hassas hale getirecek ek yöntemler önerebilirim.
+
+
+
+Soru sorun
+
+
+
+GPT-4o mini'a erişim sağlanamıyor
+Sınırsız erişim ve gelişmiş özelliklere sahip olmak için Pro Planı ayarlayın.
+Pro Planı
+Tüm modellere sınırsız erişim
+Daha hızlı yanıt
+Gerçek zamanlı web erişimi
+Herhangi bir web sayfası ve PDF okuyun
+
+Açıklama

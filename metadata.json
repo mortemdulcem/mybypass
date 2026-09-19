@@ -1,0 +1,6 @@
+{
+  "name": "Bağımsız Orbita Morfometri",
+  "description": "3B BT görüntülerinden orbita morfometrisi ve kraniyometrik ölçümler sağlayan bağımsız medikal analiz platformu",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
